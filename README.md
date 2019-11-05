@@ -66,7 +66,6 @@ And click `Save IP Settings`
 
 ![alt text](https://raw.githubusercontent.com/ahuacate/pfsense-pfblockerng/master/images/pfblockerng_ip_01.png)
 
-
 ## 4.00 Configure DNSBL Settings
 Because we have multiple internal interfaces, we are using a Qotom Mini PC Q500G6-S05 with 6x Gigabit NICs, you would want to protect them with DNSBL, so you will need to pay attention to the ‘Permit Firewall Rules’ section.
 

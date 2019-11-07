@@ -53,10 +53,16 @@ Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `IP Tab` and fill out the nece
 | MaxMind Updates | [] Check to disable MaxMind updates ||*Uncheck*
 | Global Logging | [] ||*Uncheck*
 | **IP Interface/Rules Configuration**
-| Inbound Firewall Rules | `VPNGATEWORLD` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
-|| `VPNGATELOCAL`
-| Outbound Firewall Rules | `VPNGATEWORLD` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
-|| `VPNGATELOCAL`
+| Inbound Firewall Rules | `VPNGATEWORLD01` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
+|| `VPNGATEWORLD02`
+|| `VPNGATELOCAL01`
+|| `VPNGATELOCAL02`
+|| `VPNGATELOCAL03`
+| Outbound Firewall Rules | `VPNGATEWORLD01` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
+|| `VPNGATEWORLD02`
+|| `VPNGATELOCAL01`
+|| `VPNGATELOCAL02`
+|| `VPNGATELOCAL03`
 | Floating Rules | ☑ Enabled || *Check*
 | Firewall 'Auto' Rule Order | pfB_Pass/Match/Block/Reject\All other Rules\(Default Format) || *Leave Default*
 | Firewall 'Auto' Rule Suffix | `auto rule`

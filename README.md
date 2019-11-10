@@ -35,7 +35,7 @@ At this point, you have already installed the package. Next, you will need to en
 | :---  | :--- | :--- | :--- | :--- | :---
 | pfBlockerNG | `☑` Enable | 
 | Keep Settings | `☑` Enable |
-| CRON Settings | Every hour | 00 | 0 | 0 | *Generally Leave Default settings*
+| CRON Settings | Once a day | 00 | 0 | 0 | *Generally Leave Default settings*
 
 Then Click `Save` at the bottom of the page.
 
@@ -47,11 +47,11 @@ Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `IP Tab` and fill out the nece
 | De-Duplication | `☑` Enable | |*Check*
 | CIDR Aggregation | `☑` Enable ||*Check*
 | Suppression | `☑` Enable ||*Check*
-| Global Logging | [] ||*Uncheck*
+| Global Logging | `☐` ||*Uncheck*
 | Placeholder IP Address | 127.1.7.7||*Leave Default*
 | MaxMind Localized Language | English||*Leave Default*
-| MaxMind Updates | [] Check to disable MaxMind updates ||*Uncheck*
-| Global Logging | [] ||*Uncheck*
+| MaxMind Updates | `☐` Check to disable MaxMind updates ||*Uncheck*
+| Global Logging | `☐` ||*Uncheck*
 | **IP Interface/Rules Configuration**
 | Inbound Firewall Rules | `VPNGATEWORLD01` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
 || `VPNGATEWORLD02`
@@ -81,14 +81,14 @@ First, place a checkmark in the ‘Enable’ box of `Permit Firewall Rules`. The
 
 Note, don’t forget to Click the `Save DNSBL settings` at the bottom of the page.
 
-Also if your pfSense OS has plenty of memory enable, 6Gb or more, you may use TLD. Normally, DNSBL (and other DNS blackhole software) block the domains specified in the feeds and that’s that. What TLD does differently is it will block the domain specified in addition to all of a domain’s subdomains. As a result, a instrusive domain can’t circumvent the blacklist by creating a random subdomain name such as abcd1234.zuckermine.com (if zuckermine.com was in a DNSBL feed). If you have the RAM enable it - although I choose not too.
+Also if your pfSense OS has plenty of memory enable, 4Gb or more, you may use TLD. Normally, DNSBL (and other DNS blackhole software) block the domains specified in the feeds and that’s that. What TLD does differently is it will block the domain specified in addition to all of a domain’s subdomains. As a result, a instrusive domain can’t circumvent the blacklist by creating a random subdomain name such as abcd1234.zuckermine.com (if zuckermine.com was in a DNSBL feed). If you have the RAM enable it - although I choose not too.
 
 Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `DNSBL Tab` and fill out the necessary fields as follows. Whats NOT shown in the below table leave as default. 
 
 | DNSBL | Value | Other Values | Notes
 | :---  | :--- | :--- | :---
 | DNSBL | `☑` Enable | 
-| TLD | `[]` Enable | | *Note: You need at least 3Gb of RAM for this feature*
+| TLD | `☐` Enable | | *Note: You need at least 3Gb of RAM for this feature*
 | **DNSBL Webserver Configuration**
 | Virtual IP Address | 10.10.10.1 || *Leave Default*
 | VIP Address Type | IP Alias | Leave Blank (Enter Carp Password) | *Leave Default*
@@ -99,9 +99,9 @@ Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `DNSBL Tab` and fill out 
 | Permit Firewall Rules | `☑` Enable |`OPT1` | *Select ONLY OPT1 and OPT2 - Use the Ctrl key to toggle selection*
 ||| `OPT2`
 | Blocked Webpage | dnsbl_default.php || *Leave Default*
-| Resolver Live Sync | `[]` Enable || *Uncheck*
+| Resolver Live Sync | `☐` Enable || *Uncheck*
 | **DNSBL IPs**
-| List Action | `Deny Outbound`
+| List Action | `Disabled`
 | Enable Logging | `Enable`
 
 Now click `Save DNSBL settings` at the bottom of the page.
@@ -192,8 +192,8 @@ Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `Update Tab` and fill out
 | Update Settings | Value | Vale | Value | Notes
 | :---  | :--- | :--- | :--- | :---
 | Links 
-| Select Force option | [] Update | [] Cron | `☑` Reload | *Select Reload*
-| Select Reload option | `☑` All | [] IP | [] DNSBL | *Select All*
+| Select Force option | `☐` Update | `☐` Cron | `☑` Reload | *Select Reload*
+| Select Reload option | `☑` All | `☐` IP | `☐` DNSBL | *Select All*
 
 Now Click the `RUN` below the options and you should see the Logs being created on the page. It may take a while. Be patient.
 

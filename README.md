@@ -143,11 +143,16 @@ Now lets add some more. Go back to `Firewall` > `pfBlockerNG` > `Feeds` tab up t
 Also worth mentioning before we add the `Malicious` category. Some feeds have selectable options such as feed category `Internet Storm Center`. I recommend switching the feed from `ISC_SDH` (high) to `ISC_SDL` (low) as the high feed has under 20 entries and the low feed includes the high feed.
 
 After making the switch to `ISC_SDL`, click the blue colour **`+`** next to the `Malicious` header (column should be all Malicious) to add all the feeds related to that category.
+
+![alt text](https://raw.githubusercontent.com/ahuacate/pfsense-pfblockerng/master/images/pfblockerng_dnsbl_feeds_01.png)
+
 If you clicked the **`+`** next to the Makicious category, you are taken to a `DNSBL feeds` page with all of the feeds under that category pre-populated. As when we added the ADs list, go ahead and click `Enable All` at the bottom of the list - all will switchchange to `ON` state. Then change the Action field to `Unbound`. **Don’t hit save just yet!**
 
 **Important:** Now look for any `Header/label` called **`Pulsedive`** and/or **`Malekal`** and delete them (they were not there in my pfBlockerNG version). You don't want these as they are subscription (paid) services. On deletion they will disappear.
 
 Now Click the `Save DNSBL Settings` at the bottom of the page and you should receive a message at the top along the lines of `Saved [ Type:DNSBL, Name:ADs ] configuration`.
+
+![alt text](https://raw.githubusercontent.com/ahuacate/pfsense-pfblockerng/master/images/pfblockerng_dnsbl_feeds_02.png)
 
 To check all went okay go to the `Firewall` > `pfBlockerNG` > `DNSBL` > `DNSBL Feeds` tab and you will see a DNSBL feeds summary. Your feeds summary should look similar to the one below:
 
@@ -157,7 +162,7 @@ To check all went okay go to the `Firewall` > `pfBlockerNG` > `DNSBL` > `DNSBL F
 | ADs | ADs - Collection | Unbound | Once a day | Enabled
 | Malicious | Malicious - Collection | Unbound | Once a day | Enabled
 
-Now lets add some more. Scroll down to the `DNSBL Category` header then to the Alias/Group labeled `Easylist`. Click the blue colour **`+`** next to the `Easylist` header (column should be all Easylist) to add all the feeds related to that category. You are taken to a `DNSBL feeds` page with all of the feeds under that category pre-populated. 
+Now lets add some more. Go back to `Firewall` > `pfBlockerNG` > `Feeds` and scroll down to the `DNSBL Category` header then to the Alias/Group labeled `Easylist`. Click the blue colour **`+`** next to the `Easylist` header (column should be all Easylist) to add all the feeds related to that category. You are taken to a `DNSBL feeds` page with all of the feeds under that category pre-populated. 
 
 **Important:** Now look for any `Header/label` called `EasyPrivacy` and delete it. On deletion the line will disappear.
 
@@ -166,7 +171,7 @@ All of the feeds in the list will initially be in the `OFF` state. You can go th
 Now Click the `Save DNSBL Settings` at the bottom of the page and you should receive a message at the top along the lines of `Saved [ Type:DNSBL, Name:ADs ] configuration`.
 
 Now repeat the procedure for:
-*  BBcan177 - From the creater of pfBlockerBG
+*  BBcan177 - From the creater of pfBlockerBG. Make sure its the Alias/group labeled `BBcan177`.
 *  hpHosts (all of them) - From Malwarebytes
 *  BBC (BBC_DGA_Agr) – From Bambenek Consulting
 *  Cryptojackers (all of them) – This blocks cryptojacking software and in-browser miners, but it also blocks various coin exchanges.
@@ -208,7 +213,7 @@ First connect a device (i.e mobile, tablet etc) to either *.vpngate-local or *vp
 |Jul 26 11:06:05|OPT2|192.168.40.151|connect.facebook.net [ TLD ]|AntiSocial_BD
 ||||DNSBL-HTTPS | |DNSBL_Malicious
 
-If you see nothing in the DNSBL section then pfBlockerNG is NOT working. Check your configurations to resolve. Remember after any edits or changes always perform a pfBlockerNG Update by following the procedures in **8.5 Force DNSBL Feed Updates**.
+If you see nothing in the DNSBL section then pfBlockerNG is NOT working. Check your configurations for DNS resolve. Remember after any edits or changes always perform a pfBlockerNG Update by following the procedures in **4.03 Force DNSBL Feed Updates**.
 
 If I am left scratching my heading wondering what I've done wrong I find deleting and recreating the pfSense firewall floating rules often fixes things. My procedure is as follows:
 *  Step 1: Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `General Tab` and disable pfBlockerNG. Click `Save` at the bottom of the page.
@@ -217,6 +222,8 @@ If I am left scratching my heading wondering what I've done wrong I find deletin
 *  Step 4: Next go to pfSense WebGUI `Diagnostics` > `States` > `Reset States` select `Reset the firewall state table` and click `Reset`.
 *  Step 5: Re-enable `pfBlockerNG` and `DNSBL` shown in Step 1 and 2.
 *  Step 6: Now perform a pfBlockerNG Update by following the procedures in **4.03 Force DNSBL Feed Updates**.
+
+Another MUST DO step is the creation of DNS Accept and Block Firewall rules for your network interface(s) shown [HERE](https://github.com/ahuacate/pfsense-setup/blob/master/README.md#905-dns-allow-and-block-rules-on-opt1---vpngate-world).
 
 ---
 

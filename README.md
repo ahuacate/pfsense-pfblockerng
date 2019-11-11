@@ -203,7 +203,7 @@ Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `Update Tab` and fill out
 Now Click the `RUN` below the options and you should see the Logs being created on the page. It may take a while. Be patient.
 
 ## 5.00 Check if pfBlockerNG is working
-First connect a device (i.e mobile, tablet etc) to either *.vpngate-local or *vpngate-world network. Go and browse a few websites like a news website. Then go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `Reports` > `Alerts Tab` and you should see the DNSBL entry being populated with intercepted data. 
+First connect a device (i.e mobile, tablet etc) to either *.vpngate-local or *vpngate-world network. Go and browse a few websites with advertising - for example, a news website. Then go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `Reports` > `Alerts Tab` and you should see the DNSBL entry being populated with intercepted data. 
 
 | Date | IF | Source | Domain/Referer/URI/Agent | Feed
 | :---  | :--- | :--- | :--- | :---

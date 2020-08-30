@@ -13,6 +13,7 @@ Other Prerequisites are:
 
 Tasks to be performed are:
 - [1.00 Install pfBlockerNG Package](#100-install-pfblockerng-package)
+	- [1.01 MaxMind GeoIP Registration](#101-maxmind-geoip-registration)
 - [2.00 Configure General Settings](#200-configure-general-settings)
 - [3.00 Configure IP Settings](#300-configure-ip-settings)
 - [4.00 Configure DNSBL Settings](#400-configure-dnsbl-settings)
@@ -26,7 +27,12 @@ Tasks to be performed are:
 ## 1.00 Install pfBlockerNG Package
 In the pfSense WebGUI go to `System` > `Package Manager` > `Available Packages` and type ‘pfblocker’ into the search criteria and then click `Search`.
 
-Make sure you click `+ Install` on the version with ‘-devel’ (i.e pfBlockerNG-devel) at the end of it, and then `Confirm` on the next page. Installation may take a short while as it downloads and updates certain packages.  
+Make sure you click `+ Install` on the version with ‘-devel’ (i.e pfBlockerNG-devel) at the end of it, and then `Confirm` on the next page. Installation may take a short while as it downloads and updates certain packages.
+
+### 1.01 MaxMind GeoIP Registration
+To utilize the MaxMind GeoIP functionality, you must first register for a free MaxMind user account. Visit the following [Link](https://www.maxmind.com/en/geolite2/signup) to Register for a free MaxMind user account. Utilize the GeoIP Update version 3.1.1 or newer registration option.
+
+In the `License key description` field name the license key "pfBlocker". Utilize the GeoIP Update version 3.1.1 or newer registration option. Confirm. Copy/paste the new "License Key" into into a safe file for use later in the pfBlockerNG setup (Note, you must immediately copy the key on the page to get the full key length).
 
 ## 2.00 Configure General Settings
 At this point, you have already installed the package. Next, you will need to enable it from pfSense WebGUI `Firewall` > `pfBlockerNG` and the option to exit out of the wizard. A configuration page should appear, Click on the `General Tab`, and fill out the necessary fields as follows:
@@ -49,9 +55,10 @@ Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `IP Tab` and fill out the nece
 | Suppression | `☑` Enable ||*Check*
 | Global Logging | `☐` ||*Uncheck*
 | Placeholder IP Address | 127.1.7.7||*Leave Default*
+| **MaxMind GeoIP configuration**
+| MaxMind License Key | `Insert Maxmind Key` || *See instructions at 1.01*
 | MaxMind Localized Language | English||*Leave Default*
-| MaxMind Updates | `☐` Check to disable MaxMind updates ||*Uncheck*
-| Global Logging | `☐` ||*Uncheck*
+| MaxMind CSV Updates | `☐` Check to disable MaxMind CSV updates ||*Uncheck*
 | **IP Interface/Rules Configuration**
 | Inbound Firewall Rules | `VPNGATEWORLD01` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
 || `VPNGATEWORLD02`

@@ -1,40 +1,41 @@
-# pfSense-pfBlockerNG
-pfBlockerNG can add other security enhancements such as blocking known bad IP addresses with blocklists. For example, getting rid of adverts and pop-ups from websites. If you don’t already have a blocklist functionality in place on your pfSense (such as PiHole), I would strongly suggest adding pfBlockerNG Devel to your new OpenVPN Gateways (VPNGGATEWORLD and VPNGATELOCAL).
+<h1>pfSense-pfBlockerNG</h1>
+
+pfBlockerNG is a pfSense package for extending the standard firewall’s capabilities beyond the traditional stateful L2/L3/L4 firewall.
+
+pfBlockerNG provides pfSense with the ability for the firewall to make allow/deny decisions based on items such as the geolocation of an IP address, the domain name of a resource, or the Alexa ratings of particular websites. 
+
+This guide sets up pfBlockerNG for all OpenVPN Gateways (VPNGGATEWORLD and VPNGATELOCAL). 
+
+If you don’t already have an internal LAN network block-list functionality in place I would strongly suggest installing PiHole.
+
+**Prerequisites**
 
 Network prerequisites are:
 - [x] Layer 2 Network Switches
 - [x] Network Gateway is `192.168.1.5`
-- [x] Network DNS server is `192.168.1.5` (Note: your Gateway hardware should enable you to a configure DNS server(s), like a UniFi USG Gateway, so set the following: primary DNS `192.168.1.254` which will be your PiHole server IP address; and, secondary DNS `1.1.1.1` which is a backup Cloudfare DNS server in the event your PiHole server 192.168.1.254 fails or os down)
+- [x] Network DNS server is `192.168.1.5` (Note: your Gateway hardware should enable you to configure DNS server(s), like a UniFi USG Gateway, so set the following: primary DNS `192.168.1.254` which will be your PiHole server IP address; and, secondary DNS `1.1.1.1` which is a backup Cloudfare DNS server in the event your PiHole server 192.168.1.254 fails or os down)
 - [x] Network DHCP server is `192.168.1.5`
 
 Other Prerequisites are:
-- [x] Proxmox node fully configured as per [PROXMOX-NODE BUILDING](https://github.com/ahuacate/proxmox-node/blob/master/README.md#proxmox-node-building)
+- [x] Proxmox node fully configured as per [PVE Host Setup](https://github.com/ahuacate/proxmox-node/blob/master/README.md#proxmox-node-building)
 - [x] pfSense is fully configured as per [pfSense - Setup](https://github.com/ahuacate/pfsense-setup/blob/master/README.md#pfsense---setup)
 
-Tasks to be performed are:
-- [1.00 Install pfBlockerNG Package](#100-install-pfblockerng-package)
-	- [1.01 MaxMind GeoIP Registration](#101-maxmind-geoip-registration)
-- [2.00 Configure General Settings](#200-configure-general-settings)
-- [3.00 Configure IP Settings](#300-configure-ip-settings)
-- [4.00 Configure DNSBL Settings](#400-configure-dnsbl-settings)
-	- [4.01 Enable DNSBL](#401-enable-dnsbl)
-	- [4.02 Configure DNSBL feeds](#402-configure-dnsbl-feeds)
-	- [4.03 Force DNSBL Feed Updates](#403-force-dnsbl-feed-updates)
-- [5.00 Check if pfBlockerNG is working](#500-check-if-pfblockerng-is-working)
-- [00.00 Patches and Fixes](#0000-patches-and-fixes)
+<hr>
+
+<h4>Table of Contents</h4>
 
 
-## 1.00 Install pfBlockerNG Package
+# Install pfBlockerNG Package
 In the pfSense WebGUI go to `System` > `Package Manager` > `Available Packages` and type ‘pfblocker’ into the search criteria and then click `Search`.
 
 Make sure you click `+ Install` on the version with ‘-devel’ (i.e pfBlockerNG-devel) at the end of it, and then `Confirm` on the next page. Installation may take a short while as it downloads and updates certain packages.
 
-### 1.01 MaxMind GeoIP Registration
+## MaxMind GeoIP Registration
 To utilize the MaxMind GeoIP functionality, you must first register for a free MaxMind user account. Visit the following [Link](https://www.maxmind.com/en/geolite2/signup) to Register for a free MaxMind user account. Utilize the GeoIP Update version 3.1.1 or newer registration option.
 
 In the `License key description` field name the license key "pfBlocker". Utilize the GeoIP Update version 3.1.1 or newer registration option. Confirm. Copy/paste the new "License Key" into into a safe file for use later in the pfBlockerNG setup (Note, you must immediately copy the key on the page to get the full key length).
 
-## 2.00 Configure General Settings
+# Configure General Settings
 At this point, you have already installed the package. Next, you will need to enable it from pfSense WebGUI `Firewall` > `pfBlockerNG` and the option to exit out of the wizard. A configuration page should appear, Click on the `General Tab`, and fill out the necessary fields as follows:
 
 | General Settings | Value | Value | Value | Value | Notes
@@ -45,7 +46,7 @@ At this point, you have already installed the package. Next, you will need to en
 
 Then Click `Save` at the bottom of the page.
 
-## 3.00 Configure IP Settings
+# Configure IP Settings
 Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `IP Tab` and fill out the necessary fields as follows. Whats NOT shown in the below table leave as default.
 
 | IP Configuration | Value | Other Values | Notes
@@ -55,18 +56,19 @@ Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `IP Tab` and fill out the nece
 | Suppression | `☑` Enable ||*Check*
 | Global Logging | `☐` ||*Uncheck*
 | Placeholder IP Address | 127.1.7.7||*Leave Default*
+| ASN Reporting | `Disabled`
 | **MaxMind GeoIP configuration**
 | MaxMind License Key | `Insert Maxmind Key` || *See instructions at 1.01*
 | MaxMind Localized Language | English||*Leave Default*
 | MaxMind CSV Updates | `☐` Check to disable MaxMind CSV updates ||*Uncheck*
 | **IP Interface/Rules Configuration**
 | Inbound Firewall Rules | `VPNGATEWORLD01` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
-|| `VPNGATEWORLD02`
+|| `VPNGATEWORLD02` | Block
 || `VPNGATELOCAL01`
 || `VPNGATELOCAL02`
 || `VPNGATELOCAL03`
 | Outbound Firewall Rules | `VPNGATEWORLD01` || *Select ONLY VPNGATEWORLD and VPNGATELOCAL*
-|| `VPNGATEWORLD02`
+|| `VPNGATEWORLD02` | Reject |
 || `VPNGATELOCAL01`
 || `VPNGATELOCAL02`
 || `VPNGATELOCAL03`
@@ -77,46 +79,47 @@ Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `IP Tab` and fill out the nece
 
 And click `Save IP Settings`
 
-![alt text](https://raw.githubusercontent.com/ahuacate/pfsense-pfblockerng/master/images/pfblockerng_ip_01.png)
+![alt text](./images/pfblockerng_ip_01.png)
 
-## 4.00 Configure DNSBL Settings
-Because we have multiple internal interfaces, we are using a Qotom Mini PC Q500G6-S05 with 6x Gigabit NICs, you would want to protect them with DNSBL, so you will need to pay attention to the ‘Permit Firewall Rules’ section.
+# Configure DNSBL Settings
+If you have multiple internal interfaces (2x + Gigabit NICs) you would want to protect them with DNSBL, so you will need to pay attention to the ‘Permit Firewall Rules’ section.
 
-### 4.01 Enable DNSBL
+## Enable DNSBL
 
-First, place a checkmark in the ‘Enable’ box of `Permit Firewall Rules`. Then, select the various interfaces (to the right, in a box) by holding down the ‘Ctrl’ key and left-click selecting the interfaces you choose to protect with pfBlockerNG (i.e OPT1, OPT2).
+If your pfSense OS has plenty of memory enable, 4Gb or more, you may enable TLD. If not, DO NOT enable TLD. 
 
-Note, don’t forget to Click the `Save DNSBL settings` at the bottom of the page.
+So what is TLD? Normally, DNSBL (and other DNS blackhole software) block the domains specified in the feeds. What TLD does differently is it will block the domain specified in addition to all of a domain’s subdomains. As a result, a intrusive domain can’t circumvent the blacklist by creating a random subdomain name such as abcd1234.zuckermine.com (if zuckermine.com was in a DNSBL feed). If you have the RAM enable it - although I choose not to.
 
-Also if your pfSense OS has plenty of memory enable, 4Gb or more, you may use TLD. Normally, DNSBL (and other DNS blackhole software) block the domains specified in the feeds and that’s that. What TLD does differently is it will block the domain specified in addition to all of a domain’s subdomains. As a result, a instrusive domain can’t circumvent the blacklist by creating a random subdomain name such as abcd1234.zuckermine.com (if zuckermine.com was in a DNSBL feed). If you have the RAM enable it - although I choose not too.
-
-Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `DNSBL Tab` and fill out the necessary fields as follows. Whats NOT shown in the below table leave as default. 
+Next, go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `DNSBL Tab` and fill out the necessary fields as follows. What's NOT shown in the below table leave as default. 
 
 | DNSBL | Value | Other Values | Notes
 | :---  | :--- | :--- | :---
-| DNSBL | `☑` Enable | 
-| TLD | `☐` Enable | | *Note: You need at least 3Gb of RAM for this feature*
+| DNSBL | `☑` Enable 
+| DNSBL Mode | `Unbound mode`
+| Wildcard Blocking (TLD) | `☐` Enable | | *Note: You need at least 4Gb of RAM for this feature*
+| Resolver Live Sync | `☐` Enable | 
 | **DNSBL Webserver Configuration**
-| Virtual IP Address | 10.10.10.1 || *Leave Default*
-| VIP Address Type | IP Alias | Leave Blank (Enter Carp Password) | *Leave Default*
-| Port | 8081 || *Leave Default*
-| SSL Port | 8443 || *Leave Default*
-| Webserver Interface | LAN || *Leave Default*
+| Virtual IP Address | `10.10.10.1`
+| IPv6 DNSBL | `☐` Enable
+| DNSBL VIP Type | `IP Alias` 
+| Webserver Interface | `LAN`
+| Port | 8081
+| SSL Port | 8443
 | **DNSBL Configuration**
 | Permit Firewall Rules | `☑` Enable |`OPT1` | *Select ONLY OPT1 and OPT2 - Use the Ctrl key to toggle selection*
 ||| `OPT2`
-| Blocked Webpage | dnsbl_default.php || *Leave Default*
-| Resolver Live Sync | `☐` Enable || *Uncheck*
+| Global Logging/Blocking Mode | `No Global mode`
+| Blocked Webpage | dnsbl_default.php
+| Resolver cache | `☑` Enable 
 | **DNSBL IPs**
 | List Action | `Disabled`
-| Enable Logging | `Enable`
 
 Now click `Save DNSBL settings` at the bottom of the page.
 
-![alt text](https://raw.githubusercontent.com/ahuacate/pfsense-pfblockerng/master/images/pfblockerng_dnsbl_01.png)
+![alt text](./images/pfblockerng_dnsbl_01.png)
 
-### 4.02 Configure DNSBL feeds
-Using the pfSense WebGUI  `Firewall` > `pfBlockerNG` > `Feeds Tab` (not DNSBL Feeds) at the top. Here you will see all of the pre-configured feeds for the IPv4, IPv6, and DNSBL categories.
+## Configure DNSBL feeds
+Using the pfSense WebGUI  `Firewall` > `pfBlockerNG` > `Feeds Tab` (not DNSBL Feeds) at the top, you will see all of the pre-configured feeds for the IPv4, IPv6, and DNSBL categories.
 
 Scroll down to the `DNSBL Category` header then to the Alias/Group labeled `ADs`. Click the blue colour **`+`** next to the `ADs` header (column should be all ADs) to add all the feeds related to ADs category. Note, if you instead clicked the `+` to the far right of each line, you will instead only add that individual feed - this is not what we want.
 
@@ -196,7 +199,7 @@ After adding all of the above go to the `Firewall` > `pfBlockerNG` > `DNSBL` > `
 | Cryptojackers | Cryptojackers - Collection | Unbound | Once a day | Enabled
 | Easylist | EasyList Feeds | Unbound | Every 4 hours | Enabled
 
-### 4.03 Force DNSBL Feed Updates
+## Force DNSBL Feed Updates
 You need to force a update to to `Reload` DNSBL new or changed settings. You must do this to check if your pfBlockerNG is working.
 
 Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `Update Tab` and fill out the necessary fields as follows. Whats NOT shown in the below table leave as default. 
@@ -209,7 +212,7 @@ Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `Update Tab` and fill out
 
 Now Click the `RUN` below the options and you should see the Logs being created on the page. It may take a while. Be patient.
 
-## 5.00 Check if pfBlockerNG is working
+# Check if pfBlockerNG is working
 First connect a device (i.e mobile, tablet etc) to either *.vpngate-local or *vpngate-world network. Go and browse a few websites with advertising - for example, a news website. Then go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `Reports` > `Alerts Tab` and you should see the DNSBL entry being populated with intercepted data. 
 
 | Date | IF | Source | Domain/Referer/URI/Agent | Feed
@@ -222,7 +225,7 @@ First connect a device (i.e mobile, tablet etc) to either *.vpngate-local or *vp
 
 If you see nothing in the DNSBL section then pfBlockerNG is NOT working. Check your configurations for DNS resolve. Remember after any edits or changes always perform a pfBlockerNG Update by following the procedures in **4.03 Force DNSBL Feed Updates**.
 
-If I am left scratching my heading wondering what I've done wrong I find deleting and recreating the pfSense firewall floating rules often fixes things. My procedure is as follows:
+If I am left scratching my heading wondering what I've done wrong, I find deleting and recreating the pfSense firewall floating rules fixes things. My procedure is as follows:
 *  Step 1: Go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `General Tab` and disable pfBlockerNG. Click `Save` at the bottom of the page.
 *  Step 2: Next go to pfSense WebGUI `Firewall` > `pfBlockerNG` > `DNSBL Tab` and disable DNSBL. Click `Save` at the bottom of the page.
 *  Step 3: Next go to pfSense WebGUI `Firewall` > `Rules` > `Floating Tab` and delete all 3 rules and click `Save`.
@@ -232,6 +235,6 @@ If I am left scratching my heading wondering what I've done wrong I find deletin
 
 Another MUST DO step is the creation of DNS Accept and Block Firewall rules for your network interface(s) shown [HERE](https://github.com/ahuacate/pfsense-setup/blob/master/README.md#905-dns-allow-and-block-rules-on-opt1---vpngate-world).
 
----
+<hr>
 
-## 00.00 Patches and Fixes
+# Patches and Fixes
